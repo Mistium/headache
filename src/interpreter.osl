@@ -1,0 +1,93 @@
+
+def eval(string script) string (
+  int len = script.len
+
+  int pointer = 0
+  int memory = 0
+  int total = 0
+  string out = ""
+  object data = {}
+  int maxval = 65535
+
+  number openloops = 0
+
+  array jumps = []
+  
+  int i = 0
+  while i <= len (
+    string char = script[i]
+
+    if char == "+" (
+      if memory == maxval (
+        memory = 0
+      ) else (
+        memory += 1
+      )
+      data[pointer] = memory
+    ) else if char == "-" (
+      if memory == 0 (
+        memory = maxval
+      ) else (
+        memory -= 1
+      )
+      data[pointer] = memory
+    ) else if char == ">" (
+      pointer += 1
+      if pointer > total (
+        total = pointer
+        data[pointer] = 0
+      )
+      memory = (data[pointer] ?? 0).toInt()
+    ) else if char == "<" (
+      if pointer > 0 (
+        pointer -= 1
+      )
+      memory = (data[pointer] ?? 0).toInt()
+    ) else if char == "." (
+      out ++= memory.chr()
+    ) else if char == "," (
+      memory = "Enter a character".ask().toInt()
+      data[pointer] = memory
+    ) else if char == "$" (
+      memory = pointer
+      data[pointer] = memory
+    ) else if char == "^" (
+      jumps.append(pointer)
+      pointer = memory
+    ) else if char == "@" (
+      jumps.append(pointer)
+      pointer = 0
+    ) else if char == "!" (
+      if jumps.len > 0 (
+        int last = jumps[jumps.len]
+        pointer = last
+      ) else (
+        pointer = 0
+      )
+    ) else if char == "[" and memory == 0 (
+      openloops = 1
+      while openloops > 0 and i < len (
+        i += 1
+        char = script[i]
+        if char == "[" (
+          openloops += 1
+        ) else if char == "]" (
+          openloops -= 1
+        )
+      )
+    ) else if char == "]" and memory != 0 (
+      openloops = 1
+      while openloops > 0 and i >= 0 (
+        i -= 1
+        char = script[i]
+        if char == "[" (
+          openloops -= 1
+        ) else if char == "]" (
+          openloops += 1
+        )
+      )
+    )
+    i += 1
+  )
+  return out
+)

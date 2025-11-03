@@ -1,0 +1,104 @@
+def parse(string code) array (
+    array lines = []
+
+    string buffer = ""
+
+    number depth = 0
+
+    for i code.len (
+        if code[i] == "[" (
+            depth += 1
+        )
+        if code[i] == "]" (
+            depth -= 1
+        )
+        if code[i] == "\n" (
+            continue
+        )
+        if depth == 0 and code[i] == ";" (
+            lines.append(tokeniseLine(buffer.strip()))
+            buffer = ""
+            continue
+        )
+        buffer ++= code[i]
+    )
+    if buffer.len > 0 (
+        lines.append(tokeniseLine(buffer.strip()))
+    )
+
+    return lines
+)
+
+def tokeniseLine(string line) array (
+    array tokens = []
+    string buffer = ""
+
+    number depth = 0
+    boolean inString = false
+    boolean escape = false
+
+    for i line.len (
+        string c = line[i]
+        if c == "\\" (
+            escape = true
+            continue
+        )
+        if escape (
+            escape = false
+            buffer ++= c
+            continue
+        )
+        if c == "\"" (
+            inString = !inString
+        )
+        if inString (
+            buffer ++= c
+            continue
+        )
+        if c == "[" (
+            depth += 1
+        )
+        if c == "]" (
+            depth -= 1
+        )
+        if c == " " and depth == 0 (
+            tokens.append(generateNode(buffer))
+            buffer = ""
+            continue
+        )
+        buffer ++= c
+    )
+    if buffer.len > 0 (
+        tokens.append(generateNode(buffer))
+    )
+
+    return tokens
+)
+
+def generateNode(string data) object (
+    if data[1] == "$" (
+        return {
+            "type": "variable",
+            "name": data.trim(2, -1),
+        }
+    )
+
+    if data[1] == "\"" (
+        return {
+            "type": "string",
+            "value": data.trim(2, -2),
+        }
+    )
+
+    if data[1] == "[" (
+        return {
+            "type": "block",
+            "value": parse(data.trim(2, -2)),
+        }
+    )
+
+    return {
+        "type": "literal",
+        "value": data,
+    }
+)

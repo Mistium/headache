@@ -1,0 +1,5 @@
+message = "Hello, world!";
+length = $ - message;
+
+goto $message;
+out $length;

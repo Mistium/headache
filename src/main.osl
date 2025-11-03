@@ -1,0 +1,20 @@
+import "osl/sys"
+import "osl/fs"
+
+import "./parser.osl"
+import "./compiler.osl"
+import "./interpreter.osl"
+
+string script = fs.ReadFile("../examples/hello world.hdac")
+
+def main() (
+    // array lines = parse(script)
+
+    // log lines.JsonFormat()
+
+    // string out = stringToBrainfuck("Hello, world!")
+    // out = ">>>>>" ++ out ++ logBrainfuck(13)
+    // log out
+
+    log eval("++++[>++++<-]>[<++++>-]<.")
+)

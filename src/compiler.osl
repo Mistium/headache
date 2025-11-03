@@ -1,0 +1,50 @@
+def numberToBrainfuck(int n) string (
+    if n == 0 (
+        // this decrements the current cell to 0
+        return "[-]"
+    ) else if n == 255 (
+        // this decrements then minuses 1
+        return "[-]-"
+    )
+
+    string out = "[-]"
+    int mod = n % 16
+    int div = floor(n / 16)
+    if div > 0 (
+        out ++= "@[-]!++++[@++++!-]@[!"
+        for i div (
+            out ++= "+"
+        )
+        out ++= "@-]!"
+        n = mod
+    )
+    
+    for i n (
+        out ++= "+"
+    )
+    return out
+)
+
+def charToBrainfuck(string c) string (
+    return numberToBrainfuck(c.ord())
+)
+
+def stringToBrainfuck(string s) string (
+    string out = ""
+    out ++= numberToBrainfuck(s.len) ++ ">"
+    for i s.len (
+        out ++= charToBrainfuck(s[i].toStr()) ++ ">"
+    )
+    for i s.len + 1 (
+        out ++= "<"
+    )
+    return out
+)
+
+def logBrainfuck(int n) string (
+    string out = "."
+    for i n (
+        out ++= ">."
+    )
+    return out
+)
